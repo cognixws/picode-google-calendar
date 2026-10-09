@@ -1,0 +1,58 @@
+{
+  "id": "google-calendar",
+  "name": "Google Calendar",
+  "version": "0.1.0",
+  "apiVersion": 2,
+  "publisher": "COGNIXWS",
+  "description": "Keep your COGNIX[WS] Agenda in step with Google Calendar, both ways: your Google events appear in the Agenda (with alerts and free/busy for agents), and what you add or change in the Agenda goes to Google.",
+  "process": {
+    "command": "node",
+    "args": [
+      "${extensionDir}/server.mjs"
+    ]
+  },
+  "activation": {
+    "instance": true
+  },
+  "permissions": [
+    "calendar:read",
+    "calendar:write",
+    "events:publish"
+  ],
+  "settings": [
+    {
+      "key": "client_id",
+      "label": "OAuth client ID",
+      "type": "text",
+      "required": true,
+      "description": "From your Google Cloud project: APIs & Services \u2192 Credentials \u2192 OAuth client ID of type Desktop app."
+    },
+    {
+      "key": "client_secret",
+      "label": "OAuth client secret",
+      "type": "secret",
+      "required": true,
+      "description": "The secret of the same Desktop app client."
+    },
+    {
+      "key": "calendar_id",
+      "label": "Calendar",
+      "type": "text",
+      "required": false,
+      "description": "Which Google calendar to sync. Leave empty for your primary calendar."
+    }
+  ],
+  "storage": {
+    "migrations": "migrations"
+  },
+  "ui": {
+    "pages": [
+      {
+        "id": "sync",
+        "title": "Google Calendar",
+        "path": "ui/index.html"
+      }
+    ]
+  },
+  "icon": "ui/icon.svg"
+}
