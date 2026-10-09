@@ -72,7 +72,7 @@ async function connect() {
   pending = { server, state: req.state, verifier: req.verifier, redirect, timer: setTimeout(closePending, 10 * 60e3) };
   server.on("request", async (rq, rs) => {
     const u = new URL(rq.url, redirect);
-    const page = (title, line) => { rs.writeHead(200, { "Content-Type": "text/html; charset=utf-8" }); rs.end(`<!doctype html><meta charset="utf-8"><title>${title}</title><body style="font:16px system-ui;margin:3rem;max-width:36rem"><h1 style="font-size:1.4rem">${title}</h1><p>${line}</p></body>`); };
+    const page = (title, line) => { rs.writeHead(200, { "Content-Type": "text/html; charset=utf-8" }); rs.end(`<!doctype html><meta charset="utf-8"><meta name="color-scheme" content="light dark"><title>${title}</title><body style="font:16px system-ui;margin:3rem;max-width:36rem;line-height:1.5"><h1 style="font-size:1.4rem">${title}</h1><p>${line}</p></body>`); };
     if (u.pathname !== "/callback") { rs.writeHead(404); rs.end(); return; }
     if (u.searchParams.get("state") !== pending?.state) { page("Sign-in expired", "Start again from COGNIX[WS] → Google Calendar."); return; }
     if (u.searchParams.get("error")) { page("Not connected", "Google did not grant access. You can close this tab."); closePending(); return; }
