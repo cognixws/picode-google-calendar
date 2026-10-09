@@ -1,7 +1,7 @@
 {
   "id": "google-calendar",
   "name": "Google Calendar",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "apiVersion": 2,
   "publisher": "COGNIXWS",
   "description": "Keep your COGNIX[WS] Agenda in step with Google Calendar, both ways: your Google events appear in the Agenda (with alerts and free/busy for agents), and what you add or change in the Agenda goes to Google.",

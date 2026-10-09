@@ -32,7 +32,8 @@
   function body() {
     if (!state) return error ? `<div class="notice error" role="alert"><span>${esc(error)}</span>${button("Try again", "reload")}</div>` : "";
     if (!state.configured) return `<div class="notice"><span>Add your Google OAuth client (Desktop app) to connect.</span>${button("Open settings", "settings", "primary")}</div>`;
-    if (busy === "connect" || state.signingIn) return `<div class="notice is-busy" role="status"><span>Finish signing in to Google in your browser…</span>${button("Open the sign-in again", "connect")}</div>`;
+    // A finished connection wins over the "connecting" flag the click set.
+    if (state.signingIn || (busy === "connect" && !state.connected)) return `<div class="notice is-busy" role="status"><span>Finish signing in to Google in your browser…</span>${button("Open the sign-in again", "connect")}</div>`;
     if (state.needsReconnect) return `<div class="notice warn" role="alert"><span>Google no longer accepts this connection.</span>${button("Connect again", "connect", "primary")}</div>`;
     if (!state.connected) return `<div class="notice"><span>Connect your Google account to sync your calendar.</span>${button("Connect Google account", "connect", "primary")}</div>`;
     const recentError = state.lastError && state.lastErrorAt && Date.now() - Date.parse(state.lastErrorAt) < 3600e3;
@@ -60,7 +61,10 @@
       if (name === "disconnect") { confirmDisconnect = true; return render(); }
       if (name === "disconnect-no") { confirmDisconnect = false; return render(); }
       busy = name; render();
-      if (name === "connect") { const r = await request("/connect", "POST"); await links.open(r.url); }
+      // Opening the browser is fire-and-forget: the host may never answer
+      // that call, and the sign-in finishes there anyway; /state polling
+      // (signingIn) is what follows it.
+      if (name === "connect") { const r = await request("/connect", "POST"); void Promise.resolve(links.open(r.url)).catch(() => {}); }
       else if (name === "sync") await request("/sync", "POST");
       else if (name === "disconnect-yes") { confirmDisconnect = false; await request("/disconnect", "POST"); }
     } catch (e) { error = e.message; }
